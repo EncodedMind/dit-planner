@@ -12,6 +12,18 @@ import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { Thead, Tr, Table, Td, Tbody} from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { MaintenanceAlert } from '../components/MaintenanceAlert';
+
+const maintenanceAlertDismissedKey = 'ditPlannerMaintenanceAlertDismissed';
+
+const shouldShowMaintenanceAlert = () => {
+    try {
+        return localStorage.getItem(maintenanceAlertDismissedKey) !== 'true';
+    } catch {
+        return true;
+    }
+};
+
 const greenIf = (achieved) => achieved
     ? { color: "green.300" }
     : { color: "white" };
@@ -22,6 +34,7 @@ const greenRowIf = (achieved) => achieved
 
 export function Home({courses})
 {
+    const [showMaintenanceAlert, setShowMaintenanceAlert] = useState(shouldShowMaintenanceAlert);
     const [ectsPassedSum, setEctsPassedSum] = useState(0);
     const [ectsPlannedSum, setEctsPlannedSum] = useState(0);
 
@@ -451,8 +464,25 @@ export function Home({courses})
             || (s3YPlanned >= 2 && s3BPlanned >= 4) || (s4YPlanned >= 2 && s4BPlanned >= 4)
             || (s5YPlanned >= 2 && s5BPlanned >= 4) || (s6YPlanned >= 2 && s6BPlanned >= 4));
 
+    const dismissMaintenanceAlert = () => {
+        setShowMaintenanceAlert(false);
+
+        try {
+            localStorage.setItem(maintenanceAlertDismissedKey, 'true');
+        } catch {
+            // Keep the alert dismissed for this session if storage is unavailable.
+        }
+    };
+
     return (
     <Flex align="center" justifyContent="center" flexDirection={"column"} overflow={"auto"}>
+        {showMaintenanceAlert && (
+            <MaintenanceAlert
+                w={["95%", "90%", "80%"]}
+                mt={4}
+                onClose={dismissMaintenanceAlert}
+            />
+        )}
         <CircularProgress value={ectsPassedSum} color='blue.400'  size='330px' thickness='5px' min={0} max={240} mt={3} mb={3}>
             <CircularProgressLabel>
                 <Text fontSize='56px' lineHeight='1'>{ectsPassedSum+" "}ECTS</Text>

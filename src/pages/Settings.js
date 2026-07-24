@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react'
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { useRef } from 'react'
+import { MaintenanceAlert } from '../components/MaintenanceAlert'
 
 
 export function Settings({ onResetData, onImportData, onExportData, onExportPassed, onExportPlanned, version }) {
@@ -150,6 +151,7 @@ export function Settings({ onResetData, onImportData, onExportData, onExportPass
                     </Stack>
                 </CardBody>
             </Card>
+            <MaintenanceAlert mt={4} />
         </Box>
 
     </Flex>)
